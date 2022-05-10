@@ -13,7 +13,11 @@ public class PlayerMovement : MonoBehaviour
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
-    
+
+    //float currentStraifeSpeed = 1;
+    //float initialStraifeSpeed = 1;
+    //float maxStraifeSpeed = 3;
+
     Vector3 velocity;
     bool isGrounded;
 
@@ -29,10 +33,28 @@ public class PlayerMovement : MonoBehaviour
 
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
+        
+        //if(Input.GetAxis("Horizontal") == 0)
+        //{
+        //    Debug.Log("not moving");
+        //    currentStraifeSpeed = initialStraifeSpeed;
+        //}
+        //else
+        //{
+        //    Debug.Log("moving");
+        //    if (currentStraifeSpeed < maxStraifeSpeed)
+        //    {
+
+        //        currentStraifeSpeed = currentStraifeSpeed + Time.deltaTime * 5;
+        //        Debug.Log("currentStraifeSpeed: " + currentStraifeSpeed);
+        //    }
+        //}
 
         Vector3 move = transform.right * x + transform.forward * z;
-
         controller.Move(move * speed * Time.deltaTime);
+
+
+        #region Jump Stuff
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
@@ -40,7 +62,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         velocity.y += gravity * Time.deltaTime;
-
         controller.Move(velocity * Time.deltaTime);
+
+        #endregion
     }
 }
