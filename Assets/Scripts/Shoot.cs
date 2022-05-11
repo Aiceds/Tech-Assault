@@ -5,18 +5,20 @@ using UnityEngine;
 public class Shoot : MonoBehaviour
 {
     public int gunDamage = 1;
-    public float fireRate = .25f;
     public float weaponRange = 50f;
     public float hitForce = 100f;
     public Transform gunEnd;
 
+    private bool buttonHeld;
+    public float Power;
     public float chargeUpTime = 0.5f;
+    private float minChargeUp = 0f;
+    public float maxChargeUp = 1f;
 
     private Camera fpsCam;
     private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);
     //private AudioSource gunAudio;
     private LineRenderer laserLine;
-    private float nextFire;
 
     // Start is called before the first frame update
     void Start()
@@ -24,30 +26,50 @@ public class Shoot : MonoBehaviour
         laserLine = GetComponent<LineRenderer>();
         //gunAudio = GetComponent<AudioSource>();
         fpsCam = GetComponentInParent<Camera>();
+        buttonHeld = false;
     }
 
     // Update is called once per frame
     void LateUpdate()
     {
-        if (Input.GetButtonDown("Fire1") && Time.time > nextFire)
+        Power = Mathf.Clamp(Power, minChargeUp, maxChargeUp);
+        Debug.Log("power level:" + Power);
+
+        if (Input.GetButton("Fire1"))
         {
-            nextFire = Time.time + fireRate;
+            Power += Time.deltaTime * chargeUpTime;
+            buttonHeld = true;
+        }
 
-            StartCoroutine(ShotEffect());
+        if (Input.GetButton("Fire1") == false)
+        {
+            Power -= Time.deltaTime * chargeUpTime;
+            buttonHeld = false;
+        }
 
-            Vector3 rayOrigin = fpsCam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0));
-            RaycastHit hit;
+        if (buttonHeld == true && Power == maxChargeUp)
+        {
+            Fire();
+        }
+    }
 
-            laserLine.SetPosition(0, gunEnd.position);
+    void Fire()
+    {
+        StartCoroutine(ShotEffect());
+        Power = 0f;
 
-            if (Physics.Raycast(rayOrigin, fpsCam.transform.forward, out hit, weaponRange))
-            {
-                laserLine.SetPosition(1, hit.point);
-            }
-            else
-            {
-                laserLine.SetPosition(1, rayOrigin + (fpsCam.transform.forward * weaponRange));
-            }
+        Vector3 rayOrigin = fpsCam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit hit;
+
+        laserLine.SetPosition(0, gunEnd.position);
+
+        if (Physics.Raycast(rayOrigin, fpsCam.transform.forward, out hit, weaponRange))
+        {
+            laserLine.SetPosition(1, hit.point);
+        }
+        else
+        {
+            laserLine.SetPosition(1, rayOrigin + (fpsCam.transform.forward * weaponRange));
         }
     }
 
