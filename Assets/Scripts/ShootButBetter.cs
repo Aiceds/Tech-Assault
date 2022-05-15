@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ShootButBetter : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class ShootButBetter : MonoBehaviour
     private LineRenderer laserLine;
     //private AudioSource gunAudio;
 
+    public GameObject sliderBar;
+    private Slider slider;
+
 
     // Start is called before the first frame update
     void Start()
@@ -30,12 +34,13 @@ public class ShootButBetter : MonoBehaviour
         fpsCam = GetComponentInParent<Camera>();
         //gunAudio = GetComponent<AudioSource>();
 
+        sliderBar.GetComponent<Slider>(); // UI slider
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Charge Progress" + chargeProgress);
+        Debug.Log("Charge: " + chargeProgress);
 
         if (Input.GetButton("Fire1"))
         {
@@ -62,6 +67,8 @@ public class ShootButBetter : MonoBehaviour
                 hasFiredOnThisCharge = false;
             }
         }
+
+        slider.value = chargeProgress * Time.deltaTime; // UI Slider
     }
 
     void Shoot()
@@ -85,7 +92,6 @@ public class ShootButBetter : MonoBehaviour
         {
             laserLine.SetPosition(1, rayOrigin + (fpsCam.transform.forward * weaponRange));
         }
-
     }
 
     private IEnumerator ShotEffect()
