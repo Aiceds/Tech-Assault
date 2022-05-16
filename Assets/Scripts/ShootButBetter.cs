@@ -20,13 +20,19 @@ public class ShootButBetter : MonoBehaviour
     private LineRenderer laserLine;
     //private AudioSource gunAudio;
 
-    public GameObject sliderBar;
-    private Slider slider;
+    //public GameObject sliderBar;
+    //private Slider slider;
 
-
+    //InputField typed;
     // Start is called before the first frame update
     void Start()
     {
+        //if (string.Compare(typed.text, "ThisCheat"))
+        //{
+
+       // }
+       
+
         chargeProgress = 0f;
         hasFiredOnThisCharge = false;
 
@@ -34,7 +40,7 @@ public class ShootButBetter : MonoBehaviour
         fpsCam = GetComponentInParent<Camera>();
         //gunAudio = GetComponent<AudioSource>();
 
-        sliderBar.GetComponent<Slider>(); // UI slider
+        // sliderBar.GetComponent<Slider>(); // UI slider
     }
 
     // Update is called once per frame
@@ -68,7 +74,7 @@ public class ShootButBetter : MonoBehaviour
             }
         }
 
-        slider.value = chargeProgress * Time.deltaTime; // UI Slider
+        // slider.value = chargeProgress * Time.deltaTime; // UI Slider
     }
 
     void Shoot()

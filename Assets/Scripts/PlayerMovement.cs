@@ -32,12 +32,21 @@ public class PlayerMovement : MonoBehaviour
     private float speedyTimer;
     private bool startTimer = false;
 
+    public Camera fpsCam;
+    public float maxFOV = 105f;
+    public float minFOV = 90f;
+    public float t = 0.5f;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         abilityCharged = true;
         cooldownProgress = 0f;
         speedyTimer = 0f;
+
+        fpsCam = GetComponentInChildren<Camera>();
     }
 
     // Update is called once per frame
@@ -104,6 +113,8 @@ public class PlayerMovement : MonoBehaviour
                 speed = defaultSpeed;
                 speedyTimer = 0;
                 startTimer = false;
+
+                fpsCam.fieldOfView = Mathf.Lerp(fpsCam.fieldOfView, minFOV, t);
             }
         }
 
@@ -112,7 +123,10 @@ public class PlayerMovement : MonoBehaviour
             cooldownProgress = cooldownReset;
             abilityCharged = false;
 
-            speed = abilitySpeed;            
+            speed = abilitySpeed;
+
+            fpsCam.fieldOfView = Mathf.Lerp(fpsCam.fieldOfView, maxFOV, t);
+
         }
         #endregion
 
