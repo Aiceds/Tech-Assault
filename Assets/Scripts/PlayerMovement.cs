@@ -6,6 +6,8 @@ public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
 
+    public GameObject gameManager;
+
     public float speed;
     public float gravity = -9.81f;
     public float jumpHeight = 2f;
@@ -59,27 +61,30 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = -2f;
         }
 
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-        
-        //if(Input.GetAxis("Horizontal") == 0)
-        //{
-        //    Debug.Log("not moving");
-        //    currentStraifeSpeed = initialStraifeSpeed;
-        //}
-        //else
-        //{
-        //    Debug.Log("moving");
-        //    if (currentStraifeSpeed < maxStraifeSpeed)
-        //    {
+        if (gameManager.GetComponent<GameManager>().isTyping == false)
+        {
+            float x = Input.GetAxis("Horizontal");
+            float z = Input.GetAxis("Vertical");
 
-        //        currentStraifeSpeed = currentStraifeSpeed + Time.deltaTime * 5;
-        //        Debug.Log("currentStraifeSpeed: " + currentStraifeSpeed);
-        //    }
-        //}
+            //if(Input.GetAxis("Horizontal") == 0)
+            //{
+            //    Debug.Log("not moving");
+            //    currentStraifeSpeed = initialStraifeSpeed;
+            //}
+            //else
+            //{
+            //    Debug.Log("moving");
+            //    if (currentStraifeSpeed < maxStraifeSpeed)
+            //    {
 
-        Vector3 move = transform.right * x + transform.forward * z;
-        controller.Move(move * speed * Time.deltaTime);
+            //        currentStraifeSpeed = currentStraifeSpeed + Time.deltaTime * 5;
+            //        Debug.Log("currentStraifeSpeed: " + currentStraifeSpeed);
+            //    }
+            //}
+
+            Vector3 move = transform.right * x + transform.forward * z;
+            controller.Move(move * speed * Time.deltaTime);
+        }
 
 
         #region Speed Ability
