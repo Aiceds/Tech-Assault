@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -38,22 +39,25 @@ public class GameManager : MonoBehaviour
                 else
                 {
                     SendMessageToChat("> " + chatBox.text);
-                    //check if its an ability
-                    if(chatBox.text == "test")
+
+                    //Activate ability after correct input
+                    if (chatBox.text == "/dash")
                     {
-                        Debug.Log("test typed");
                         player.GetComponent<Blink>().startTeleport();
                     }
-                    else
+
+                    if (chatBox.text == "/move")
                     {
-                        Debug.Log("not typed");
+                        player.GetComponent<PlayerMovement>().ActivateMove();
+                    }
+
+                    if (chatBox.text == "/r")
+                    {
+                        Scene scene = SceneManager.GetActiveScene(); SceneManager.LoadScene(scene.name);
                     }
 
                     chatBox.text = "";
                     isTyping = false;
-
-                   
-
                 }
             }
         }

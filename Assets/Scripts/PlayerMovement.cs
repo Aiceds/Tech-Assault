@@ -86,6 +86,18 @@ public class PlayerMovement : MonoBehaviour
             controller.Move(move * speed * Time.deltaTime);
         }
 
+        #region Jump Stuff
+
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
+
+        #endregion
+
 
         #region Speed Ability
         cooldownProgress = Mathf.Clamp01(cooldownProgress - (Time.deltaTime / chargeTime));
@@ -95,18 +107,18 @@ public class PlayerMovement : MonoBehaviour
             abilityCharged = true;
         }
 
-        if (Input.GetKeyDown("q"))
-        {
-            startTimer = true;
+        //if (Input.GetKeyDown("q"))
+        //{
+        //    startTimer = true;
 
-            // When fully charged and ability charged
-            if (cooldownProgress <= 0f && abilityCharged == true)
-            {
-                // Use ability
-                SpeedAbility();
-                cooldownProgress = cooldownReset;
-            }
-        }
+        //    // When fully charged and ability charged
+        //    if (cooldownProgress <= 0f && abilityCharged == true)
+        //    {
+        //        // Use ability
+        //        SpeedAbility();
+        //        cooldownProgress = cooldownReset;
+        //    }
+        //}
 
         if (startTimer == true)
         {
@@ -122,30 +134,30 @@ public class PlayerMovement : MonoBehaviour
                 fpsCam.fieldOfView = Mathf.Lerp(fpsCam.fieldOfView, minFOV, t);
             }
         }
-
-        void SpeedAbility()
-        {
-            cooldownProgress = cooldownReset;
-            abilityCharged = false;
-
-            speed = abilitySpeed;
-
-            fpsCam.fieldOfView = Mathf.Lerp(fpsCam.fieldOfView, maxFOV, t);
-
-        }
-        #endregion
-
-
-        #region Jump Stuff
-
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
-
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
-
-        #endregion
     }
+
+    public void ActivateMove()
+    {
+        startTimer = true;
+
+        // When fully charged and ability charged
+        if (cooldownProgress <= 0f && abilityCharged == true)
+        {
+            // Use ability
+            SpeedAbility();
+            cooldownProgress = cooldownReset;
+        }
+    }
+
+    void SpeedAbility()
+    {
+        cooldownProgress = cooldownReset;
+        abilityCharged = false;
+
+        speed = abilitySpeed;
+
+        fpsCam.fieldOfView = Mathf.Lerp(fpsCam.fieldOfView, maxFOV, t);
+    }
+        #endregion
+
 }

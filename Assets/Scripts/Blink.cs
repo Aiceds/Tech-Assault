@@ -12,12 +12,12 @@ public class Blink : MonoBehaviour
     private float cooldownProgress; // 0-1 how much the ability is charged up
     private bool abilityCharged; // true or false
 
-    GameObject gameManager;
+    // GameObject gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameManager");
+        // gameManager = GameObject.FindGameObjectWithTag("GameManager");
         abilityCharged = true;
         cooldownProgress = 0f;
     }
@@ -32,7 +32,7 @@ public class Blink : MonoBehaviour
         if (cooldownProgress <= 0f)
         {
 
-            Debug.Log("Ability Charged? " + abilityCharged);
+            Debug.Log("Dash Charged? " + abilityCharged);
             abilityCharged = true;
         }
 
@@ -50,7 +50,7 @@ public class Blink : MonoBehaviour
     }
         
     
-
+    // Teleport called from text box script
     public void startTeleport()
     {
         // When fully charged and ability charged
@@ -64,8 +64,6 @@ public class Blink : MonoBehaviour
 
     void Teleport()
     {
-        Debug.Log("Teepeed");
-
         cooldownProgress = cooldownReset;
         abilityCharged = false;
 
