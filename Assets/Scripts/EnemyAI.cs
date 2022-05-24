@@ -18,14 +18,22 @@ public class EnemyAI : MonoBehaviour
     bool walkPointSet;
     public float walkPointRange;
 
+    
+
     //Attacking
     public float timeBetweenAttacks;
     bool alreadyAttacked;
+    public GameObject projectile;
+
+    public Transform shotPoint;
 
 
     //States
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
+
+    private Vector3 playerDirection;
+    private bool playerDetected;
 
     private void Awake()
     {
@@ -49,6 +57,25 @@ public class EnemyAI : MonoBehaviour
         if (!playerInSightRange && !playerInAttackRange) Patroling();
         if (playerInSightRange && !playerInAttackRange) ChasePlayer();
         if (playerInSightRange && playerInAttackRange) AttackPlayer();
+
+
+        RaycastHit hit;
+
+        playerDirection = new Vector3(player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y, player.transform.position.z - transform.position.z);
+
+        if (Physics.Raycast(shotPoint.position, playerDirection, out hit))
+        {
+            if (hit.transform.gameObject.tag == "Player")
+            {
+                playerDetected = true;
+
+                //chase the player
+            }
+            else
+            {
+                playerDetected = false;
+            }
+        }
     }
 
     private void Patroling()
@@ -70,7 +97,6 @@ public class EnemyAI : MonoBehaviour
         {
             walkPointSet = false;
         }
-            
     }
 
     private void SearchWalkPoint()
@@ -90,13 +116,20 @@ public class EnemyAI : MonoBehaviour
     private void ChasePlayer()
     {
         agent.SetDestination(player.position);
+    }
+
+    private void AttackPlayer()
+    {
+        //Make sure enemy doesn't move
+        agent.SetDestination(transform.position);
 
         transform.LookAt(player);
 
         if (!alreadyAttacked)
         {
             //Attack code goes here (video time stamp = 3:55)
-
+            Instantiate(projectile, shotPoint.transform.position, shotPoint.transform.rotation);
+            
 
 
             alreadyAttacked = true;
@@ -107,11 +140,6 @@ public class EnemyAI : MonoBehaviour
     private void ResetAttack()
     {
         alreadyAttacked = false;
-    }
-
-    private void AttackPlayer()
-    {
-
     }
 
     public void TakeDamage(int damage)

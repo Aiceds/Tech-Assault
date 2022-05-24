@@ -158,6 +158,11 @@ public class PlayerMovement : MonoBehaviour
 
         fpsCam.fieldOfView = Mathf.Lerp(fpsCam.fieldOfView, maxFOV, t);
     }
-        #endregion
+    #endregion
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, groundDistance);
+    }
 
 }
