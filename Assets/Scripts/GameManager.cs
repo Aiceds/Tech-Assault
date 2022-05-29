@@ -11,8 +11,17 @@ public class GameManager : MonoBehaviour
     public GameObject chatPanel, textObject;
     public InputField chatBox;
     GameObject player;
+    public GameObject enemy;
 
     public bool isTyping = false;
+
+    public float chargeTime;
+    public float cooldownReset = 10f;
+    public bool abilitiesCharged;
+    public float cooldownProgress;
+
+    private bool startTimer = false;
+    private float speedyTimer;
 
     [SerializeField]
     List<Message> messageList = new List<Message>();
@@ -21,6 +30,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        abilitiesCharged = true;
+        cooldownProgress = 0f;
     }
 
     // Update is called once per frame
@@ -41,17 +52,22 @@ public class GameManager : MonoBehaviour
                     SendMessageToChat("> " + chatBox.text);
 
                     //Activate ability after correct input
-                    if (chatBox.text == "/dash")
+                    if (chatBox.text.ToLower() == "/blink")
                     {
                         player.GetComponent<Blink>().startTeleport();
                     }
 
-                    if (chatBox.text == "/move")
+                    if (chatBox.text.ToLower() == "/move")
                     {
-                        player.GetComponent<PlayerMovement>().ActivateMove();
+                        player.GetComponent<PlayerMovement>().ActivateMove(); 
                     }
 
-                    if (chatBox.text == "/r")
+                    if (chatBox.text.ToLower() == "/walls")
+                    {
+                        WallsAbility();
+                    }
+
+                    if (chatBox.text.ToLower() == "/r")
                     {
                         Scene scene = SceneManager.GetActiveScene(); SceneManager.LoadScene(scene.name);
                     }
@@ -68,10 +84,42 @@ public class GameManager : MonoBehaviour
                 chatBox.ActivateInputField();
                 isTyping = true;
                 chatBox.text = " ";
+            }
+        }
+        #endregion
 
+        #region Abilities Cooldown
+
+        // Abilities cooldown
+        cooldownProgress = Mathf.Clamp01(cooldownProgress - (Time.deltaTime / chargeTime));
+
+        if (cooldownProgress <= 0f)
+        {
+            abilitiesCharged = true;
+        }
+        #endregion
+
+        #region Walls Ability timer
+        if (startTimer == true)
+        {
+            speedyTimer += Time.deltaTime;
+
+            // Resets speed after timer hits 5 seconds
+            if (speedyTimer >= 8)
+            {
+                enemy.GetComponentInChildren<Outline>().enabled = false;
+                speedyTimer = 0;
+                startTimer = false;
             }
         }
     }
+
+    void WallsAbility()
+    {
+        enemy.GetComponentInChildren<Outline>().enabled = true;
+        startTimer = true;
+    }
+    #endregion
 
     public void SendMessageToChat(string text)
     {
@@ -100,5 +148,5 @@ public class GameManager : MonoBehaviour
         public string text;
         public Text textObject;
     }
-    #endregion
+    
 }

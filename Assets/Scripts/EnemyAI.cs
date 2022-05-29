@@ -13,12 +13,15 @@ public class EnemyAI : MonoBehaviour
 
     public float health;
 
-    //Patroling
-    public Vector3 walkPoint;
-    bool walkPointSet;
-    public float walkPointRange;
+    public float damage;
 
-    
+    //Patroling
+    //public Vector3 walkPoint;
+    //bool walkPointSet;
+    //public float walkPointRange;
+
+    public Transform[] points;
+    private int destPoint = 0;
 
     //Attacking
     public float timeBetweenAttacks;
@@ -27,13 +30,11 @@ public class EnemyAI : MonoBehaviour
 
     public Transform shotPoint;
 
-
     //States
-    public float sightRange, attackRange;
+    //public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
     private Vector3 playerDirection;
-    private bool playerDetected;
 
     private void Awake()
     {
@@ -41,96 +42,140 @@ public class EnemyAI : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        
+        // Disabling auto-braking allows for continuous movement
+        // between points (ie, the agent doesn't slow down as it
+        // approaches a destination point).
+        agent.autoBraking = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         // Check if player is within sight and attack range
-        playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
-        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
+        //playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
+        //playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
-        if (!playerInSightRange && !playerInAttackRange) Patroling();
-        if (playerInSightRange && !playerInAttackRange) ChasePlayer();
-        if (playerInSightRange && playerInAttackRange) AttackPlayer();
-
+        //Check if the player is in line of sight for attacking
+        //playerDirection = new Vector3(player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y, player.transform.position.z - transform.position.z);
+        
+        playerDirection = player.transform.position - transform.position;
 
         RaycastHit hit;
-
-        playerDirection = new Vector3(player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y, player.transform.position.z - transform.position.z);
 
         if (Physics.Raycast(shotPoint.position, playerDirection, out hit))
         {
             if (hit.transform.gameObject.tag == "Player")
             {
-                playerDetected = true;
-
-                //chase the player
+                playerInAttackRange = true;
             }
             else
             {
-                playerDetected = false;
+                playerInAttackRange = false;
             }
         }
-    }
 
-    private void Patroling()
-    {
-        if (!walkPointSet)
-        {
-            SearchWalkPoint();
-        }
+        if (!playerInSightRange && !playerInAttackRange) GoToNextPoint();
+        if (playerInSightRange && !playerInAttackRange) ChasePlayer();
+        if (playerInSightRange && playerInAttackRange) AttackPlayer();
 
-        if (walkPointSet)
+        // Choose the next destination point when the agent gets
+        // close to the current one.
+        if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
-            agent.SetDestination(walkPoint);
-        }
-        
-        Vector3 distanceToWalkPoint = transform.position - walkPoint;
-
-        //Walkpoint reached
-        if (distanceToWalkPoint.magnitude < 1f)
-        {
-            walkPointSet = false;
+            GoToNextPoint();
         }
     }
 
-    private void SearchWalkPoint()
+    private void GoToNextPoint()
     {
-        //Calculate random point in range
-        float randomZ = Random.Range(-walkPointRange, walkPointRange);
-        float randomX = Random.Range(-walkPointRange, walkPointRange);
+        //if (!walkPointSet)
+        //{
+        //    SearchWalkPoint();
+        //}
 
-        walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
+        //if (walkPointSet)
+        //{
+        //    agent.SetDestination(walkPoint);
+        //}
 
-        if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
+        //Vector3 distanceToWalkPoint = transform.position - walkPoint;
+
+        ////Walkpoint reached
+        //if (distanceToWalkPoint.magnitude < 1f)
+        //{
+        //    walkPointSet = false;
+        //}
+
+        //if (!approchingA)
+        //{
+        //    agent.SetDestination(pointA);
+        //}
+
+        //if (approchingA)
+        //{
+        //    agent.SetDestination(pointB);
+        //}
+
+        // Returns if no points have been set up
+        if (points.Length == 0)
+            return;
+
+        // Set the agent to go to the currently selected destination.
+        agent.destination = points[destPoint].position;
+
+        // Choose the next point in the array as the destination,
+        // cycling to the start if necessary.
+        destPoint = (destPoint + 1) % points.Length;
+    }
+
+    //private void SearchWalkPoint()
+    //{
+    //    //Calculate random point in range
+    //    //float randomZ = Random.Range(-walkPointRange, walkPointRange);
+    //    //float randomX = Random.Range(-walkPointRange, walkPointRange);
+
+    //    //walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
+
+    //    //if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
+    //    //{
+    //    //    walkPointSet = true;
+    //    //}
+    //}
+
+    public void FindPlayer()
+    {
+        playerDirection = new Vector3(player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y, player.transform.position.z - transform.position.z);
+        RaycastHit hit;
+
+        //Raycast detection
+        if (Physics.Raycast(shotPoint.position, playerDirection, out hit))
         {
-            walkPointSet = true;
+            if (hit.transform.gameObject.tag == "Player")
+            {
+                playerInSightRange = true;
+            }
         }
     }
 
     private void ChasePlayer()
     {
         agent.SetDestination(player.position);
+
+        transform.LookAt(player);
     }
 
     private void AttackPlayer()
     {
         //Make sure enemy doesn't move
-        agent.SetDestination(transform.position);
+        //agent.SetDestination(transform.position);
 
         transform.LookAt(player);
 
         if (!alreadyAttacked)
         {
-            //Attack code goes here (video time stamp = 3:55)
+            //Attack code goes here
             Instantiate(projectile, shotPoint.transform.position, shotPoint.transform.rotation);
-            
-
 
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
@@ -142,23 +187,27 @@ public class EnemyAI : MonoBehaviour
         alreadyAttacked = false;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage()
     {
         health -= damage;
+        Debug.Log("took Damage");
 
-        if (health <= 0) Invoke(nameof(DestroyEnemy), 0.5f);
+        if (health <= 0)
+        {
+            DestroyEnemy();
+        }
     }
 
     private void DestroyEnemy()
     {
-        Destroy(gameObject);
+        Destroy(transform.parent.gameObject);
     }
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, sightRange);
+        //Gizmos.color = Color.red;
+        //Gizmos.DrawWireSphere(transform.position, attackRange);
+        //Gizmos.color = Color.yellow;
+        //Gizmos.DrawWireSphere(transform.position, sightRange);
     }
 }

@@ -6,6 +6,12 @@ public class Blink : MonoBehaviour
 {
     public float tpDistance = 5.0f;
 
+    public Transform playerBottom;
+    public CharacterController playerInfo;
+    public Transform cam;
+
+    public LayerMask whatIsGround;
+
     public float chargeTime; // How long it takes to charge the ability to full charge from max charge
     public float cooldownReset = 10f;
 
@@ -31,8 +37,6 @@ public class Blink : MonoBehaviour
 
         if (cooldownProgress <= 0f)
         {
-
-            Debug.Log("Dash Charged? " + abilityCharged);
             abilityCharged = true;
         }
 
@@ -58,7 +62,6 @@ public class Blink : MonoBehaviour
         {
             // Use ability
             Teleport();
-            cooldownProgress = cooldownReset;
         }
     }
 
@@ -71,10 +74,24 @@ public class Blink : MonoBehaviour
         RaycastHit hit;
         Vector3 destination = transform.position + transform.forward * tpDistance;
 
+        //Vector3 p1 = playerBottom.position + (Vector3.up * 0.1f);
+        //p1.y += playerInfo.radius;
+
+        //Vector3 p2 = playerBottom.position + (Vector3.up * playerInfo.height);
+        //p2.y += playerInfo.radius;
+
+
+        //if (Physics.CapsuleCast(p1, p2, playerInfo.radius, cam.forward, out hit, tpDistance, whatIsGround))
+        //{
+        //    destination = transform.position + cam.forward * hit.distance;
+        //}
+
+        //transform.position = destination;
+
         // obsticle found to be intersecting
         if (Physics.Linecast(transform.position, destination, out hit))
         {
-            destination = transform.position + transform.forward * (hit.distance + 2f);
+            destination = transform.position + transform.forward * (hit.distance + 3f);
         }
 
         // No obstacles found

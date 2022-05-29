@@ -12,6 +12,9 @@ public class ShootButBetter : MonoBehaviour
     public float weaponRange = 50f;
     public float hitForce = 100f;
 
+    public GameObject enemy;
+    public LayerMask hitLayers;
+
     private float chargeProgress; // 0-1 how much the gun is charged up
     private bool hasFiredOnThisCharge; // If the player is holding the button, whether the gun has shot yet
 
@@ -20,34 +23,23 @@ public class ShootButBetter : MonoBehaviour
     private LineRenderer laserLine;
     //private AudioSource gunAudio;
 
-    //public GameObject sliderBar;
-    //private Slider slider;
+    
 
     //InputField typed;
     // Start is called before the first frame update
     void Start()
     {
-        //if (string.Compare(typed.text, "ThisCheat"))
-        //{
-
-       // }
-       
-
         chargeProgress = 0f;
         hasFiredOnThisCharge = false;
 
         laserLine = GetComponent<LineRenderer>();
         fpsCam = GetComponentInParent<Camera>();
         //gunAudio = GetComponent<AudioSource>();
-
-        // sliderBar.GetComponent<Slider>(); // UI slider
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Charge: " + chargeProgress);
-
         if (Input.GetButton("Fire1"))
         {
             // Charge up weapon
@@ -73,15 +65,12 @@ public class ShootButBetter : MonoBehaviour
                 hasFiredOnThisCharge = false;
             }
         }
-
-        // slider.value = chargeProgress * Time.deltaTime; // UI Slider
     }
 
     void Shoot()
     {
         // Stop the gun from shooting multiple times on one charge
         hasFiredOnThisCharge = true;
-        Debug.Log("We fired the gun!");
 
         StartCoroutine(ShotEffect());
 
@@ -90,14 +79,25 @@ public class ShootButBetter : MonoBehaviour
 
         laserLine.SetPosition(0, gunEnd.position);
 
-        if (Physics.Raycast(rayOrigin, fpsCam.transform.forward, out hit, weaponRange))
+        if (Physics.Raycast(rayOrigin, fpsCam.transform.forward, out hit, weaponRange, hitLayers))
         {
             laserLine.SetPosition(1, hit.point);
+
+            Debug.Log("EMOTIONAL DAMAGE");
+
+            if (hit.collider.gameObject == enemy)
+            {
+                Debug.Log("Attempted to take damage");
+
+                EnemyAI enemyScript = gameObject.GetComponent<EnemyAI>();
+                enemyScript.TakeDamage();
+            }
         }
         else
         {
             laserLine.SetPosition(1, rayOrigin + (fpsCam.transform.forward * weaponRange));
         }
+
     }
 
     private IEnumerator ShotEffect()

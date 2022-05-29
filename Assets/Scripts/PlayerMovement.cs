@@ -6,7 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
 
-    public GameObject gameManager;
+    public GameManager gameManager;
 
     public float speed;
     public float gravity = -9.81f;
@@ -39,8 +39,6 @@ public class PlayerMovement : MonoBehaviour
     public float minFOV = 90f;
     public float t = 0.5f;
 
-
-
     // Start is called before the first frame update
     void Start()
     {
@@ -61,11 +59,12 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = -2f;
         }
 
-        if (gameManager.GetComponent<GameManager>().isTyping == false)
+        if (gameManager.isTyping == false)
         {
             float x = Input.GetAxis("Horizontal");
             float z = Input.GetAxis("Vertical");
 
+            // Strafe lurping but at home
             //if(Input.GetAxis("Horizontal") == 0)
             //{
             //    Debug.Log("not moving");
@@ -100,12 +99,6 @@ public class PlayerMovement : MonoBehaviour
 
 
         #region Speed Ability
-        cooldownProgress = Mathf.Clamp01(cooldownProgress - (Time.deltaTime / chargeTime));
-
-        if (cooldownProgress <= 0f)
-        {
-            abilityCharged = true;
-        }
 
         //if (Input.GetKeyDown("q"))
         //{
@@ -120,11 +113,12 @@ public class PlayerMovement : MonoBehaviour
         //    }
         //}
 
+        // Starts the timer for how long the player has speed
         if (startTimer == true)
         {
             speedyTimer += Time.deltaTime;
 
-            // Resets speed
+            // Resets speed after timer hits 5 seconds
             if (speedyTimer >= 5)
             {
                 speed = defaultSpeed;
@@ -136,24 +130,23 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // Called from text script to activate speed
     public void ActivateMove()
     {
-        startTimer = true;
-
-        // When fully charged and ability charged
-        if (cooldownProgress <= 0f && abilityCharged == true)
+        // When cooldown goes to 0 and ability is charged
+        if (gameManager.cooldownProgress <= 0f && gameManager.abilitiesCharged == true)
         {
-            // Use ability
+            // Calls to increase speed
             SpeedAbility();
-            cooldownProgress = cooldownReset;
+            gameManager.cooldownProgress = gameManager.cooldownReset;
+            gameManager.abilitiesCharged = false;
         }
     }
 
     void SpeedAbility()
     {
-        cooldownProgress = cooldownReset;
-        abilityCharged = false;
-
+        // Increase speed and reset timer and set charge to false
+        startTimer = true;
         speed = abilitySpeed;
 
         fpsCam.fieldOfView = Mathf.Lerp(fpsCam.fieldOfView, maxFOV, t);
