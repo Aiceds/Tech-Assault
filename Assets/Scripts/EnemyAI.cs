@@ -34,6 +34,9 @@ public class EnemyAI : MonoBehaviour
     //public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
+    private bool startTimer;
+    private float timer;
+
     private Vector3 playerDirection;
 
     private void Awake()
@@ -84,6 +87,11 @@ public class EnemyAI : MonoBehaviour
         if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
             GoToNextPoint();
+        }
+
+        if (startTimer == true)
+        {
+            timer += Time.deltaTime;
         }
     }
 
@@ -174,12 +182,20 @@ public class EnemyAI : MonoBehaviour
 
         if (!alreadyAttacked)
         {
+            startTimer = true;
 
-            //Attack code goes here
-            Instantiate(projectile, shotPoint.transform.position, shotPoint.transform.rotation);
+            // Shoots after timer hits 2 seconds
+            if (timer >= 2)
+            {
+                //Attack code goes here
+                Instantiate(projectile, shotPoint.transform.position, shotPoint.transform.rotation);
 
-            alreadyAttacked = true;
-            Invoke(nameof(ResetAttack), timeBetweenAttacks);
+                alreadyAttacked = true;
+                Invoke(nameof(ResetAttack), timeBetweenAttacks);
+
+                timer = 0;
+                startTimer = false;
+            }
         }
     }
 
