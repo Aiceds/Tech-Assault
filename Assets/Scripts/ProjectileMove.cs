@@ -6,13 +6,11 @@ public class ProjectileMove : MonoBehaviour
 {
     public float speed;
     public float projectileLifetime;
-    private float duration;
-
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        StartCoroutine(SelfDestruct());
     }
 
     // Update is called once per frame
@@ -22,12 +20,16 @@ public class ProjectileMove : MonoBehaviour
         {
             transform.position += transform.forward * (speed * Time.deltaTime);
         }
+    }
 
-        duration = duration * Time.deltaTime;
+    IEnumerator SelfDestruct()
+    {
+        yield return new WaitForSeconds(5f);
+        Destroy(gameObject);
+    }
 
-        if (duration >= projectileLifetime)
-        {
-            Destroy(gameObject);
-        }
+    void OnCollisionEnter(Collision collision)
+    {
+        Destroy(gameObject);
     }
 }

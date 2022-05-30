@@ -23,6 +23,8 @@ public class PlayerMovement : MonoBehaviour
     Vector3 velocity;
     bool isGrounded;
 
+    public float offStepEdit;
+
     public float chargeTime;
     public float cooldownReset = 10f;
 
@@ -87,9 +89,17 @@ public class PlayerMovement : MonoBehaviour
 
         #region Jump Stuff
 
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (gameManager.isTyping == false)
         {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            if (Input.GetButtonDown("Jump") && isGrounded)
+            {
+                velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+                controller.stepOffset = 0;
+            }
+            else
+            {
+                controller.stepOffset = offStepEdit;
+            }
         }
 
         velocity.y += gravity * Time.deltaTime;

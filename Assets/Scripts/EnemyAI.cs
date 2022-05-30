@@ -169,11 +169,12 @@ public class EnemyAI : MonoBehaviour
     {
         //Make sure enemy doesn't move
         //agent.SetDestination(transform.position);
-
+        
         transform.LookAt(player);
 
         if (!alreadyAttacked)
         {
+
             //Attack code goes here
             Instantiate(projectile, shotPoint.transform.position, shotPoint.transform.rotation);
 

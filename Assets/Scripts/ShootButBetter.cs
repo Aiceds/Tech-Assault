@@ -12,7 +12,6 @@ public class ShootButBetter : MonoBehaviour
     public float weaponRange = 50f;
     public float hitForce = 100f;
 
-    public GameObject enemy;
     public LayerMask hitLayers;
 
     private float chargeProgress; // 0-1 how much the gun is charged up
@@ -83,13 +82,12 @@ public class ShootButBetter : MonoBehaviour
         {
             laserLine.SetPosition(1, hit.point);
 
-            Debug.Log("EMOTIONAL DAMAGE");
+            EnemyAI enemyScript = hit.transform.gameObject.GetComponentInParent<EnemyAI>();
 
-            if (hit.collider.gameObject == enemy)
+            // If there is an enemy script exists on the perent object that was hit
+            if (enemyScript != null)
             {
                 Debug.Log("Attempted to take damage");
-
-                EnemyAI enemyScript = gameObject.GetComponent<EnemyAI>();
                 enemyScript.TakeDamage();
             }
         }

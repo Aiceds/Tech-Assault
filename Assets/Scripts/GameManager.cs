@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
                         player.GetComponent<Blink>().startTeleport();
                     }
 
-                    if (chatBox.text.ToLower() == "/move")
+                    if (chatBox.text.ToLower() == "/speed")
                     {
                         player.GetComponent<PlayerMovement>().ActivateMove(); 
                     }
