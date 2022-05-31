@@ -207,7 +207,6 @@ public class EnemyAI : MonoBehaviour
     public void TakeDamage()
     {
         health -= damage;
-        Debug.Log("took Damage");
 
         if (health <= 0)
         {

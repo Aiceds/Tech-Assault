@@ -98,11 +98,11 @@ public class ShootButBetter : MonoBehaviour
 
             // Find the line from the gun to the point that was clicked.
             Vector3 incomingVec = hit.point - rayOrigin;
-
             // Use the point's normal to calculate the reflection vector.
             Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
-
+            // Create sparks looking in the reflected direction
             Instantiate(sparks, hit.point, Quaternion.LookRotation(reflectVec));
+
 
             EnemyAI enemyScript = hit.transform.gameObject.GetComponentInParent<EnemyAI>();
 
@@ -114,6 +114,7 @@ public class ShootButBetter : MonoBehaviour
         }
         else
         {
+            // Shoots a laser even when it doesn't hit a object
             laserLine.SetPosition(1, rayOrigin + (fpsCam.transform.forward * weaponRange));
         }
 

@@ -28,9 +28,6 @@ public class PlayerMovement : MonoBehaviour
     public float chargeTime;
     public float cooldownReset = 10f;
 
-    private float cooldownProgress;
-    private bool abilityCharged;
-
     public float defaultSpeed = 3.5f;
     public float abilitySpeed;
     private float speedyTimer;
@@ -44,8 +41,6 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        abilityCharged = true;
-        cooldownProgress = 0f;
         speedyTimer = 0f;
 
         fpsCam = GetComponentInChildren<Camera>();
@@ -144,17 +139,18 @@ public class PlayerMovement : MonoBehaviour
     public void ActivateMove()
     {
         // When cooldown goes to 0 and ability is charged
-        if (gameManager.cooldownProgress <= 0f && gameManager.abilitiesCharged == true)
+        if (gameManager.abilitiesCharged == true)
         {
             // Calls to increase speed
             SpeedAbility();
-            gameManager.cooldownProgress = gameManager.cooldownReset;
-            gameManager.abilitiesCharged = false;
         }
     }
 
     void SpeedAbility()
     {
+        gameManager.cooldownProgress = gameManager.cooldownReset;
+        gameManager.abilitiesCharged = false;
+
         // Increase speed and reset timer and set charge to false
         startTimer = true;
         speed = abilitySpeed;

@@ -12,33 +12,32 @@ public class Blink : MonoBehaviour
 
     public LayerMask whatIsGround;
 
-    public float chargeTime; // How long it takes to charge the ability to full charge from max charge
-    public float cooldownReset = 10f;
+    //public float chargeTime; // How long it takes to charge the ability to full charge from max charge
+    //public float cooldownReset = 10f;
 
-    private float cooldownProgress; // 0-1 how much the ability is charged up
-    private bool abilityCharged; // true or false
+    //private float cooldownProgress; // 0-1 how much the ability is charged up
+    //private bool abilityCharged; // true or false
 
-    // GameObject gameManager;
+    public GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
         // gameManager = GameObject.FindGameObjectWithTag("GameManager");
-        abilityCharged = true;
-        cooldownProgress = 0f;
+        //abilityCharged = true;
+        //cooldownProgress = 0f;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // cooldown for blink only
+        //cooldownProgress = Mathf.Clamp01(cooldownProgress - (Time.deltaTime / chargeTime));
 
-        // cooldown
-        cooldownProgress = Mathf.Clamp01(cooldownProgress - (Time.deltaTime / chargeTime));
-
-        if (cooldownProgress <= 0f)
-        {
-            abilityCharged = true;
-        }
+        //if (cooldownProgress <= 0f)
+        //{
+        //    abilityCharged = true;
+        //}
 
         //if(gameManager.GetComponent<GameManager>().isTyping == false) { 
         //if (Input.GetKeyDown("e"))
@@ -57,18 +56,17 @@ public class Blink : MonoBehaviour
     // Teleport called from text box script
     public void startTeleport()
     {
-        // When fully charged and ability charged
-        if (cooldownProgress <= 0f && abilityCharged == true)
+        if (gameManager.abilitiesCharged == true)
         {
-            // Use ability
+            // Calls to increase speed
             Teleport();
         }
     }
 
     void Teleport()
     {
-        cooldownProgress = cooldownReset;
-        abilityCharged = false;
+        gameManager.cooldownProgress = gameManager.cooldownReset;
+        gameManager.abilitiesCharged = false;
 
         #region Teleport
         RaycastHit hit;

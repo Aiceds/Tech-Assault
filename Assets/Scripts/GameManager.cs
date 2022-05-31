@@ -16,12 +16,14 @@ public class GameManager : MonoBehaviour
     public bool isTyping = false;
 
     public float chargeTime;
-    public float cooldownReset = 10f;
+    public float cooldownReset = 0f;
     public bool abilitiesCharged;
     public float cooldownProgress;
 
     private bool startTimer = false;
     private float speedyTimer;
+
+    public Slider abilitiesSlider;
 
     [SerializeField]
     List<Message> messageList = new List<Message>();
@@ -31,7 +33,7 @@ public class GameManager : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         abilitiesCharged = true;
-        cooldownProgress = 0f;
+        cooldownProgress = 10f;
     }
 
     // Update is called once per frame
@@ -91,9 +93,10 @@ public class GameManager : MonoBehaviour
         #region Abilities Cooldown
 
         // Abilities cooldown
-        cooldownProgress = Mathf.Clamp01(cooldownProgress - (Time.deltaTime / chargeTime));
+        cooldownProgress = Mathf.Clamp01(cooldownProgress + (Time.deltaTime / chargeTime));
+        abilitiesSlider.value = cooldownProgress;
 
-        if (cooldownProgress <= 0f)
+        if (cooldownProgress >= 1f)
         {
             abilitiesCharged = true;
         }
@@ -104,8 +107,8 @@ public class GameManager : MonoBehaviour
         {
             speedyTimer += Time.deltaTime;
 
-            // Resets speed after timer hits 5 seconds
-            if (speedyTimer >= 8)
+            // Resets outline after timer hits 6 seconds
+            if (speedyTimer >= 6)
             {
                 enemy.GetComponentInChildren<Outline>().enabled = false;
                 speedyTimer = 0;
@@ -116,8 +119,18 @@ public class GameManager : MonoBehaviour
 
     void WallsAbility()
     {
-        enemy.GetComponentInChildren<Outline>().enabled = true;
-        startTimer = true;
+        if (abilitiesCharged == true)
+        {
+            if (enemy != null)
+            {
+                // If abilities are charged, enable outline and start timer
+                enemy.GetComponentInChildren<Outline>().enabled = true;
+                startTimer = true;
+
+                cooldownProgress = cooldownReset;
+                abilitiesCharged = false;
+            }
+        }
     }
     #endregion
 
