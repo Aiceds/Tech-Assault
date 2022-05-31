@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using CameraShake;
 
 public class ShootButBetter : MonoBehaviour
 {
@@ -86,6 +87,8 @@ public class ShootButBetter : MonoBehaviour
         hasFiredOnThisCharge = true;
 
         StartCoroutine(ShotEffect());
+
+        CameraShaker.Presets.ShortShake3D();
 
         Vector3 rayOrigin = fpsCam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;

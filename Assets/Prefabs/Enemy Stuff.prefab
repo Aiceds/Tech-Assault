@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2457312908015046176}
   - component: {fileID: 2457312908015046183}
   - component: {fileID: 2457312908015046182}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Eye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1791,7 +1791,7 @@ GameObject:
   - component: {fileID: 2457312908247727988}
   - component: {fileID: 2457312908247727995}
   - component: {fileID: 2457312908247727993}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Hover
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50279,7 +50279,7 @@ GameObject:
   - component: {fileID: 2457312908583839351}
   - component: {fileID: 2457312908583839350}
   - component: {fileID: 2457312908583839349}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51150,7 +51150,7 @@ GameObject:
   - component: {fileID: 2457312909126565819}
   - component: {fileID: 2457312909126565818}
   - component: {fileID: 2457312909126565817}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Arm (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52835,7 +52835,7 @@ GameObject:
   - component: {fileID: 2457312909361252978}
   - component: {fileID: 2457312909361252977}
   - component: {fileID: 2457312909361252976}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Butt Plate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54675,7 +54675,7 @@ GameObject:
   - component: {fileID: 2457312909618259066}
   - component: {fileID: 2457312909618259065}
   - component: {fileID: 2457312909618259064}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55576,7 +55576,7 @@ GameObject:
   - component: {fileID: 2457312909642678568}
   - component: {fileID: 2457312909642678575}
   - component: {fileID: 2457312909642678574}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56447,7 +56447,7 @@ GameObject:
   - component: {fileID: 2457312909674157649}
   - component: {fileID: 2457312909674157648}
   - component: {fileID: 2457312909674157655}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Body Outer
   m_TagString: Untagged
   m_Icon: {fileID: 0}

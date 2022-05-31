@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviour
     public GameObject chatPanel, textObject;
     public InputField chatBox;
     GameObject player;
-    public GameObject enemy;
+    public GameObject[] enemyArr;
+    public int enemyCount;
 
     public bool isTyping = false;
 
@@ -34,6 +35,8 @@ public class GameManager : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         abilitiesCharged = true;
         cooldownProgress = 10f;
+
+        enemyArr = new GameObject[enemyCount];
     }
 
     // Update is called once per frame
@@ -102,7 +105,7 @@ public class GameManager : MonoBehaviour
         }
         #endregion
 
-        #region Walls Ability timer
+        #region Walls Ability timer ----------------------------------------------
         if (startTimer == true)
         {
             speedyTimer += Time.deltaTime;
@@ -110,7 +113,11 @@ public class GameManager : MonoBehaviour
             // Resets outline after timer hits 6 seconds
             if (speedyTimer >= 6)
             {
-                enemy.GetComponentInChildren<Outline>().enabled = false;
+                for (int i = 0; i < enemyCount; i++)
+                {
+                    GetComponentInChildren<Outline>().enabled = false;
+                }
+                
                 speedyTimer = 0;
                 startTimer = false;
             }
@@ -121,10 +128,13 @@ public class GameManager : MonoBehaviour
     {
         if (abilitiesCharged == true)
         {
-            if (enemy != null)
+            if (enemyArr != null)
             {
-                // If abilities are charged, enable outline and start timer
-                enemy.GetComponentInChildren<Outline>().enabled = true;
+                for (int i = 0; i < enemyCount; i++)
+                {
+                    GetComponentInChildren<Outline>().enabled = true;
+                }
+
                 startTimer = true;
 
                 cooldownProgress = cooldownReset;
