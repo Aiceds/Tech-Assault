@@ -35,7 +35,7 @@ Transform:
 --- !u!198 &7951374695944278982
 ParticleSystem:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 9118793448702941651, guid: 6be52dca242dba244bde010983dbb291, type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7951374695944278980}
@@ -4813,6 +4813,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7951374695983649376}
+  - component: {fileID: 4270800105171946931}
   m_Layer: 0
   m_Name: Sparks
   m_TagString: Untagged
@@ -4836,6 +4837,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4270800105171946931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7951374695983649391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d846b4543ad0834bb12c295321f2a33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7951374696137523784
 GameObject:
   m_ObjectHideFlags: 0

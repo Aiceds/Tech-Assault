@@ -17,19 +17,23 @@ public class ShootButBetter : MonoBehaviour
     private float chargeProgress; // 0-1 how much the gun is charged up
     private bool hasFiredOnThisCharge; // If the player is holding the button, whether the gun has shot yet
 
+    //private bool fireLetGo;
+
+    public Slider chargeSlider;
+
     private Camera fpsCam;
     private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);
     private LineRenderer laserLine;
     //private AudioSource gunAudio;
 
-    
+    public GameObject sparks;
 
-    //InputField typed;
     // Start is called before the first frame update
     void Start()
     {
         chargeProgress = 0f;
         hasFiredOnThisCharge = false;
+        //fireLetGo = true;
 
         laserLine = GetComponent<LineRenderer>();
         fpsCam = GetComponentInParent<Camera>();
@@ -39,31 +43,41 @@ public class ShootButBetter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButton("Fire1"))
+        if (hasFiredOnThisCharge == false)
         {
-            // Charge up weapon
-            chargeProgress = Mathf.Clamp01(chargeProgress + (Time.deltaTime / chargeTime));
-
-            // When fully charged and not fired on this charge yet
-            if (chargeProgress >= 1f && hasFiredOnThisCharge == false)
+            if (Input.GetButton("Fire1"))
             {
-                // Shoot the gun
-                Shoot();
-                chargeProgress = 0f;
+                // Charge up weapon
+                chargeProgress = Mathf.Clamp01(chargeProgress + (Time.deltaTime / chargeTime));
+
+                // When fully charged and not fired on this charge yet
+                if (chargeProgress >= 1f)
+                {
+                    // Shoot the gun
+                    Shoot();
+                    chargeProgress = 0f;
+                }
+            }
+            else
+            {
+                // Drain weapon charge
+                chargeProgress = Mathf.Clamp01(chargeProgress - (Time.deltaTime / drainTime));
+
+                // After firing and releasing, set charge back to 0 and allow more shooting
+                if (hasFiredOnThisCharge)
+                {
+                    chargeProgress = 0f;
+                    hasFiredOnThisCharge = false;
+                }
             }
         }
-        else
-        {
-            // Drain weapon charge
-            chargeProgress = Mathf.Clamp01(chargeProgress - (Time.deltaTime / drainTime));
 
-            // After firing and releasing, set charge back to 0 and allow more shooting
-            if (hasFiredOnThisCharge)
-            {
-                chargeProgress = 0f;
-                hasFiredOnThisCharge = false;
-            }
+        if (Input.GetButtonUp("Fire1"))
+        {
+            hasFiredOnThisCharge = false;
         }
+
+        chargeSlider.value = chargeProgress;
     }
 
     void Shoot()
@@ -82,12 +96,19 @@ public class ShootButBetter : MonoBehaviour
         {
             laserLine.SetPosition(1, hit.point);
 
+            // Find the line from the gun to the point that was clicked.
+            Vector3 incomingVec = hit.point - rayOrigin;
+
+            // Use the point's normal to calculate the reflection vector.
+            Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
+
+            Instantiate(sparks, hit.point, Quaternion.LookRotation(reflectVec));
+
             EnemyAI enemyScript = hit.transform.gameObject.GetComponentInParent<EnemyAI>();
 
             // If there is an enemy script exists on the perent object that was hit
             if (enemyScript != null)
             {
-                Debug.Log("Attempted to take damage");
                 enemyScript.TakeDamage();
             }
         }
