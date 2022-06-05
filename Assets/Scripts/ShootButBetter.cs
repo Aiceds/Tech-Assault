@@ -25,7 +25,10 @@ public class ShootButBetter : MonoBehaviour
     private Camera fpsCam;
     private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);
     private LineRenderer laserLine;
-    //private AudioSource gunAudio;
+
+    private AudioSource gunAudio;
+    private AudioSource chargeAudio;
+    public int startingPitch = 4;
 
     public GameObject sparks;
 
@@ -38,7 +41,9 @@ public class ShootButBetter : MonoBehaviour
 
         laserLine = GetComponent<LineRenderer>();
         fpsCam = GetComponentInParent<Camera>();
-        //gunAudio = GetComponent<AudioSource>();
+        gunAudio = GetComponent<AudioSource>();
+
+        chargeAudio.pitch = startingPitch;
     }
 
     // Update is called once per frame
@@ -125,7 +130,7 @@ public class ShootButBetter : MonoBehaviour
 
     private IEnumerator ShotEffect()
     {
-        //gunAudio.Play();
+        gunAudio.Play();
 
         laserLine.enabled = true;
         yield return shotDuration;

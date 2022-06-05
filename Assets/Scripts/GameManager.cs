@@ -12,7 +12,6 @@ public class GameManager : MonoBehaviour
     public InputField chatBox;
     GameObject player;
     public GameObject[] enemyArr;
-    public int enemyCount;
 
     public bool isTyping = false;
 
@@ -36,7 +35,7 @@ public class GameManager : MonoBehaviour
         abilitiesCharged = true;
         cooldownProgress = 10f;
 
-        enemyArr = new GameObject[enemyCount];
+        //enemyArr = new GameObject[enemyCount];
     }
 
     // Update is called once per frame
@@ -113,9 +112,10 @@ public class GameManager : MonoBehaviour
             // Resets outline after timer hits 6 seconds
             if (speedyTimer >= 6)
             {
-                for (int i = 0; i < enemyCount; i++)
+                for (int i = 0; i < enemyArr.Length; i++)
                 {
-                    GetComponentInChildren<Outline>().enabled = false;
+                    //enemyArr[i].GetComponentInChildren<Outline>().enabled = false;
+                    enemyArr[i].transform.GetChild(1).GetComponent<Outline>().enabled = false;
                 }
                 
                 speedyTimer = 0;
@@ -130,9 +130,10 @@ public class GameManager : MonoBehaviour
         {
             if (enemyArr != null)
             {
-                for (int i = 0; i < enemyCount; i++)
+                for (int i = 0; i < enemyArr.Length; i++)
                 {
-                    GetComponentInChildren<Outline>().enabled = true;
+                    //enemyArr[i].GetComponentInChildren<Outline>().enabled = true;
+                    enemyArr[i].transform.GetChild(1).GetComponent<Outline>().enabled = true;
                 }
 
                 startTimer = true;

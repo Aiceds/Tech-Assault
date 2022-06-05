@@ -23,8 +23,6 @@ public class EnemyAI : MonoBehaviour
     public Transform[] points;
     private int destPoint = 0;
 
-    private bool goingToB;
-
     //Attacking
     public float timeBetweenAttacks;
     bool alreadyAttacked;
@@ -53,7 +51,8 @@ public class EnemyAI : MonoBehaviour
         // between points (ie, the agent doesn't slow down as it
         // approaches a destination point).
         agent.autoBraking = false;
-        goingToB = true;
+
+        GoToNextPoint();
     }
 
     void Update()
@@ -87,7 +86,7 @@ public class EnemyAI : MonoBehaviour
 
         // Choose the next destination point when the agent gets
         // close to the current one.
-        if (!agent.pathPending && agent.remainingDistance < 0.2f && goingToB)
+        if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
             GoToNextPoint();
         }
@@ -128,20 +127,13 @@ public class EnemyAI : MonoBehaviour
         //    agent.SetDestination(pointB);
         //}
 
-        goingToB = false;
-
         // Returns if no points have been set up
         if (points.Length == 0)
             return;
 
-        if (!goingToB)
-        {
-            // Set the agent to go to the currently selected destination.
-            agent.destination = points[destPoint].position;
+        // Set the agent to go to the currently selected destination.
+        agent.destination = points[destPoint].position;
 
-            goingToB = true;
-        }
-        
         // Choose the next point in the array as the destination,
         // cycling to the start if necessary.
         destPoint = (destPoint + 1) % points.Length;
@@ -176,7 +168,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private void ChasePlayer()
+    public void ChasePlayer()
     {
         agent.SetDestination(player.position);
 
@@ -226,7 +218,7 @@ public class EnemyAI : MonoBehaviour
 
     private void DestroyEnemy()
     {
-        Destroy(transform.parent.gameObject);
+        this.transform.parent.gameObject.SetActive(false);
     }
 
     private void OnDrawGizmosSelected()

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
@@ -9,11 +10,16 @@ public class PauseMenu : MonoBehaviour
 
     public GameObject pauseMenuUI;
 
+    public Slider audioSlider;
+
     // Start is called before the first frame update
     void Start()
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
+        SoundManager.Instance.ChangeMasterVolume(audioSlider.value);
+        audioSlider.onValueChanged.AddListener(val => SoundManager.Instance.ChangeMasterVolume(val));
     }
 
     // Update is called once per frame
@@ -52,17 +58,17 @@ public class PauseMenu : MonoBehaviour
         Cursor.visible = true;
     }
 
-    public void Controls()
-    {
-
-    }
-
-    public void Video()
-    {
-
-    }
-
     public void Audio()
+    {
+
+    }
+
+    public void Bloom()
+    {
+
+    }
+
+    public void MotionBlur()
     {
 
     }

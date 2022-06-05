@@ -29,6 +29,7 @@ public class ProjectileMove : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        Debug.Log("projectile kms");
         Destroy(gameObject);
     }
 }
