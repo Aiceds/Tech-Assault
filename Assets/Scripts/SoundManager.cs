@@ -6,7 +6,7 @@ public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;
 
-    [SerializeField] private AudioSource _ambiantSource, _neonBuzzingSource;
+    //public AudioSource audioSource;
 
     private void Awake()
     {
@@ -21,10 +21,10 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void PlaySound(AudioClip clip)
-    {
-        _ambiantSource.PlayOneShot(clip);
-    }
+    //public void PlaySound(AudioClip clip)
+    //{
+    //    audioSource.PlayOneShot(clip);
+    //}
 
     public void ChangeMasterVolume(float value)
     {

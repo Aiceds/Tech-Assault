@@ -9,6 +9,10 @@ public class ShootButBetter : MonoBehaviour
     public float chargeTime; // How long it takes to charge the gun to full charge from 0
     public float drainTime; // How long it would take to drain to 0 from full charge
 
+    public GameObject player;
+    Vector3 lastPos;
+    private bool isNotMoving;
+
     public Transform gunEnd;
     public float weaponRange = 50f;
     public float hitForce = 100f;
@@ -26,9 +30,9 @@ public class ShootButBetter : MonoBehaviour
     private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);
     private LineRenderer laserLine;
 
-    private AudioSource gunAudio;
-    private AudioSource chargeAudio;
-    public int startingPitch = 4;
+    public AudioSource weaponShotAudio;
+    //public AudioSource chargeAudio;
+    //public int startingPitch = 4;
 
     public GameObject sparks;
 
@@ -41,9 +45,8 @@ public class ShootButBetter : MonoBehaviour
 
         laserLine = GetComponent<LineRenderer>();
         fpsCam = GetComponentInParent<Camera>();
-        gunAudio = GetComponent<AudioSource>();
 
-        chargeAudio.pitch = startingPitch;
+        //chargeAudio.pitch = startingPitch;
     }
 
     // Update is called once per frame
@@ -57,7 +60,7 @@ public class ShootButBetter : MonoBehaviour
                 chargeProgress = Mathf.Clamp01(chargeProgress + (Time.deltaTime / chargeTime));
 
                 // When fully charged and not fired on this charge yet
-                if (chargeProgress >= 1f)
+                if (chargeProgress >= 1f && isNotMoving)
                 {
                     // Shoot the gun
                     Shoot();
@@ -82,6 +85,16 @@ public class ShootButBetter : MonoBehaviour
         {
             hasFiredOnThisCharge = false;
         }
+
+        if (player.transform.position != lastPos)
+        {
+            isNotMoving = false;
+        }
+        else
+        {
+            isNotMoving = true;
+        }
+        lastPos = player.transform.position;
 
         chargeSlider.value = chargeProgress;
     }
@@ -112,7 +125,7 @@ public class ShootButBetter : MonoBehaviour
             Instantiate(sparks, hit.point, Quaternion.LookRotation(reflectVec));
 
 
-            EnemyAI enemyScript = hit.transform.gameObject.GetComponentInParent<EnemyAI>();
+            EnemyAI enemyScript = hit.collider.GetComponentInParent<EnemyAI>();
 
             // If there is an enemy script exists on the perent object that was hit
             if (enemyScript != null)
@@ -130,7 +143,7 @@ public class ShootButBetter : MonoBehaviour
 
     private IEnumerator ShotEffect()
     {
-        gunAudio.Play();
+        weaponShotAudio.Play();
 
         laserLine.enabled = true;
         yield return shotDuration;

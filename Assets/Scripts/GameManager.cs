@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     List<Message> messageList = new List<Message>();
+    private bool allInActive;
 
     // Start is called before the first frame update
     void Start()
@@ -92,8 +93,25 @@ public class GameManager : MonoBehaviour
         }
         #endregion
 
-        #region Abilities Cooldown
+        for (int i = 0; i < enemyArr.Length; i++)
+        {
+            if (enemyArr[i].activeInHierarchy)
+            {
+                allInActive = false;
+                break;
+            }
+            else
+            {
+                allInActive = true;
+            }
+        }
+        if (allInActive)
+        {
+            Time.timeScale = 0.2f;
+            WonGame();
+        }
 
+        #region Abilities Cooldown
         // Abilities cooldown
         cooldownProgress = Mathf.Clamp01(cooldownProgress + (Time.deltaTime / chargeTime));
         abilitiesSlider.value = cooldownProgress;
@@ -114,8 +132,8 @@ public class GameManager : MonoBehaviour
             {
                 for (int i = 0; i < enemyArr.Length; i++)
                 {
-                    //enemyArr[i].GetComponentInChildren<Outline>().enabled = false;
-                    enemyArr[i].transform.GetChild(1).GetComponent<Outline>().enabled = false;
+                    enemyArr[i].GetComponentInChildren<Outline>().enabled = false;
+                    //enemyArr[i].transform.GetChild(1).GetComponent<Outline>().enabled = false;
                 }
                 
                 speedyTimer = 0;
@@ -132,8 +150,8 @@ public class GameManager : MonoBehaviour
             {
                 for (int i = 0; i < enemyArr.Length; i++)
                 {
-                    //enemyArr[i].GetComponentInChildren<Outline>().enabled = true;
-                    enemyArr[i].transform.GetChild(1).GetComponent<Outline>().enabled = true;
+                    enemyArr[i].GetComponentInChildren<Outline>().enabled = true;
+                    //enemyArr[i].transform.GetChild(1).GetComponent<Outline>().enabled = true;
                 }
 
                 startTimer = true;
@@ -172,5 +190,15 @@ public class GameManager : MonoBehaviour
         public string text;
         public Text textObject;
     }
-    
+    public void WonGame()
+    {
+        Debug.Log("ALL ENEMIES DEFEATED!!");
+
+        // fade screen
+        // Animation "All enemies defeated"
+    }
+    public void LoseGame()
+    {
+        Scene scene = SceneManager.GetActiveScene(); SceneManager.LoadScene(scene.name);
+    }
 }

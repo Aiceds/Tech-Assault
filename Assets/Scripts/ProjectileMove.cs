@@ -1,10 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class ProjectileMove : MonoBehaviour
 {
+    public GameManager gameManager;
+
     public float speed;
+    public GameObject sparks;
+
+    //Vector3 lastPos;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +26,13 @@ public class ProjectileMove : MonoBehaviour
         {
             transform.position += transform.forward * (speed * Time.deltaTime);
         }
+
+        //if (transform.position != lastPos)
+        //{
+        //    lastpos = new Vector3 (transform.position);
+        //}
+
+        //lastPos = transform.position;
     }
 
     IEnumerator SelfDestruct()
@@ -27,9 +41,19 @@ public class ProjectileMove : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("projectile kms");
-        Destroy(gameObject);
+        if (collision.gameObject.tag == "Ground")
+        {
+            // Calculating the instantiate rotation for sparks
+            // Find the line from the gun to the point that was clicked.
+            //Vector3 incomingVec = transform.position - lastPos;
+            // Use the point's normal to calculate the reflection vector.
+            //Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
+            // Create sparks looking in the reflected direction
+            //Instantiate(sparks, transform.position, Quaternion.LookRotation(reflectVec));
+
+            Destroy(gameObject);
+        }
     }
 }
