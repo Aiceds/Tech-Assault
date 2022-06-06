@@ -22,7 +22,6 @@ public class PlayerHitCollider : MonoBehaviour
     {
         if (other.gameObject.tag == "Bullet")
         {
-            Debug.Log("Lost game");
             gameManager.LoseGame();
         }
     }

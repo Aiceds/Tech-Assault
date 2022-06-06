@@ -29,12 +29,17 @@ public class GameManager : MonoBehaviour
     List<Message> messageList = new List<Message>();
     private bool allInActive;
 
+    public GameObject victoryScreen;
+    public GameObject defeatedScreen;
+
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         abilitiesCharged = true;
         cooldownProgress = 10f;
+
+        Time.timeScale = 1f;
 
         //enemyArr = new GameObject[enemyCount];
     }
@@ -64,7 +69,7 @@ public class GameManager : MonoBehaviour
 
                     if (chatBox.text.ToLower() == "/speed")
                     {
-                        player.GetComponent<PlayerMovement>().ActivateMove(); 
+                        player.GetComponent<PlayerMovement>().ActivateMove();
                     }
 
                     if (chatBox.text.ToLower() == "/walls")
@@ -93,6 +98,7 @@ public class GameManager : MonoBehaviour
         }
         #endregion
 
+        #region All Enemies Defeated Winning Condition
         for (int i = 0; i < enemyArr.Length; i++)
         {
             if (enemyArr[i].activeInHierarchy)
@@ -107,9 +113,9 @@ public class GameManager : MonoBehaviour
         }
         if (allInActive)
         {
-            Time.timeScale = 0.2f;
             WonGame();
         }
+        #endregion
 
         #region Abilities Cooldown
         // Abilities cooldown
@@ -135,7 +141,7 @@ public class GameManager : MonoBehaviour
                     enemyArr[i].GetComponentInChildren<Outline>().enabled = false;
                     //enemyArr[i].transform.GetChild(1).GetComponent<Outline>().enabled = false;
                 }
-                
+
                 speedyTimer = 0;
                 startTimer = false;
             }
@@ -190,15 +196,34 @@ public class GameManager : MonoBehaviour
         public string text;
         public Text textObject;
     }
+
     public void WonGame()
     {
         Debug.Log("ALL ENEMIES DEFEATED!!");
+        Time.timeScale = 0.2f;
+        victoryScreen.SetActive(true);
 
-        // fade screen
-        // Animation "All enemies defeated"
+        StartCoroutine(LoadMainSceneAfterVic());
     }
+    IEnumerator LoadMainSceneAfterVic()
+    {
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene(0);
+    }
+
     public void LoseGame()
     {
+        Debug.Log("Lost game");
+        Time.timeScale = 0.2f;
+        defeatedScreen.SetActive(true);
+
+        StartCoroutine(ReloadAfterDefeat());
+    }
+
+    IEnumerator ReloadAfterDefeat()
+    {
+        yield return new WaitForSeconds(1f);
         Scene scene = SceneManager.GetActiveScene(); SceneManager.LoadScene(scene.name);
     }
+
 }

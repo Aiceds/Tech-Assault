@@ -30,6 +30,8 @@ public class EnemyAI : MonoBehaviour
 
     public Transform shotPoint;
 
+    public AudioSource enemyShotAudio;
+
     //States
     //public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
@@ -191,6 +193,8 @@ public class EnemyAI : MonoBehaviour
             {
                 //Attack code goes here
                 Instantiate(projectile, shotPoint.transform.position, shotPoint.transform.rotation);
+
+                enemyShotAudio.Play();
 
                 alreadyAttacked = true;
                 Invoke(nameof(ResetAttack), timeBetweenAttacks);

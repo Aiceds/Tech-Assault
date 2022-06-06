@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
@@ -8,8 +9,8 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     public Volume volume;
-    private bool bloomEnabled;
-    private bool mBlurEnabled;
+
+    public Slider audioSlider;
 
     public GameObject blurBox;
     public GameObject bloomBox;
@@ -17,16 +18,59 @@ public class MainMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        bloomEnabled = true;
-        mBlurEnabled = true;
+        StateController.bloomEnabled = true;
+        StateController.blurEnabled = true;
+        StateController.audioVolumeValue = 0.5f;
 
         Time.timeScale = 1f;
+
+        audioSlider.value = StateController.audioVolumeValue;
+        SoundManager.soundManager.ChangeMasterVolume(StateController.audioVolumeValue);
+        audioSlider.onValueChanged.AddListener(val => SoundManager.soundManager.ChangeMasterVolume(val));
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        #region Bloom Updates
+        Bloom bloom;
+        if (volume.profile.TryGet<Bloom>(out bloom))
+        {
+            bloom.intensity.value = StateController.bloomIntensity;
+        }
+
+        if (StateController.bloomEnabled == true)
+        {
+            StateController.bloomIntensity = 1.2f;
+            bloomBox.SetActive(true);
+        }
+        else if (StateController.bloomEnabled == false)
+        {
+            StateController.bloomIntensity = 0f;
+            bloomBox.SetActive(false);
+        }
+        #endregion
+
+        #region Blur Updates
+        MotionBlur motionBlur;
+        if (volume.profile.TryGet<MotionBlur>(out motionBlur))
+        {
+            motionBlur.intensity.value = StateController.blurIntensity;
+        }
+
+        if (StateController.blurEnabled == true)
+        {
+            StateController.blurIntensity = 1.2f;
+            blurBox.SetActive(true);
+        }
+        else if (StateController.blurEnabled == false)
+        {
+            StateController.blurIntensity = 0f;
+            blurBox.SetActive(false);
+        }
+        #endregion
+
+        StateController.audioVolumeValue = audioSlider.value;
     }
 
     public void PlayMedium()
@@ -41,37 +85,25 @@ public class MainMenu : MonoBehaviour
 
     public void BloomOnOff()
     {
-        Bloom bloom;
-
-        if (volume.profile.TryGet<Bloom>(out bloom) && bloomEnabled)
+        if (StateController.bloomEnabled == true)
         {
-            bloom.intensity.value = 0f;
-            bloomEnabled = false;
-            bloomBox.SetActive(false);
+            StateController.bloomEnabled = false;
         }
         else
         {
-            bloom.intensity.value = 1.2f;
-            bloomEnabled = true;
-            bloomBox.SetActive(true);
+            StateController.bloomEnabled = true;
         }
     }
 
     public void MotionBlurOnOff()
     {
-        MotionBlur motionBlur;
-
-        if (volume.profile.TryGet<MotionBlur>(out motionBlur) && mBlurEnabled)
+        if (StateController.blurEnabled == true)
         {
-            motionBlur.intensity.value = 0f;
-            mBlurEnabled = false;
-            blurBox.SetActive(false);
+            StateController.blurEnabled = false;
         }
         else
         {
-            motionBlur.intensity.value = 0.5f;
-            mBlurEnabled = true;
-            blurBox.SetActive(true);
+            StateController.blurEnabled = true;
         }
     }
 }
