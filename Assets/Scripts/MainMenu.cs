@@ -23,6 +23,8 @@ public class MainMenu : MonoBehaviour
         StateController.audioVolumeValue = 0.5f;
 
         Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
 
         audioSlider.value = StateController.audioVolumeValue;
         SoundManager.soundManager.ChangeMasterVolume(StateController.audioVolumeValue);
