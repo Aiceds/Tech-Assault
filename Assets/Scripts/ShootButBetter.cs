@@ -31,8 +31,9 @@ public class ShootButBetter : MonoBehaviour
     private LineRenderer laserLine;
 
     public AudioSource weaponShotAudio;
-    //public AudioSource chargeAudio;
-    //public int startingPitch = 4;
+    public AudioSource chargeAudio;
+    public int startingPitch = -2;
+    public int timeToDecrease = 8;
 
     public GameObject sparks;
 
@@ -46,7 +47,7 @@ public class ShootButBetter : MonoBehaviour
         laserLine = GetComponent<LineRenderer>();
         fpsCam = GetComponentInParent<Camera>();
 
-        //chargeAudio.pitch = startingPitch;
+        chargeAudio.pitch = startingPitch;
     }
 
     // Update is called once per frame
@@ -58,6 +59,11 @@ public class ShootButBetter : MonoBehaviour
             {
                 // Charge up weapon
                 chargeProgress = Mathf.Clamp01(chargeProgress + (Time.deltaTime / chargeTime));
+                
+                if (chargeAudio.pitch < 2f)
+                {
+                    chargeAudio.pitch += Time.deltaTime * startingPitch / timeToDecrease;
+                }
 
                 // When fully charged and not fired on this charge yet
                 if (chargeProgress >= 1f && isNotMoving)
@@ -71,6 +77,11 @@ public class ShootButBetter : MonoBehaviour
             {
                 // Drain weapon charge
                 chargeProgress = Mathf.Clamp01(chargeProgress - (Time.deltaTime / drainTime));
+                
+                if (chargeAudio.pitch > -2f)
+                {
+                    chargeAudio.pitch -= Time.deltaTime * startingPitch / timeToDecrease;
+                }
 
                 // After firing and releasing, set charge back to 0 and allow more shooting
                 if (hasFiredOnThisCharge)
